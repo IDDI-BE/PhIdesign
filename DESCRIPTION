@@ -1,0 +1,17 @@
+Package: PhIdesign
+Type: Package
+Title: Decision rules and simulation of model-assisted Phase I designs
+Version: 0.2.0
+Maintainer: Koenraad D'Hollander <koenraad.dhollander@iddi.com>
+Authors@R: c(
+    person("Koenraad", "D'Hollander", role = c("aut", "cre", "cph"), email = "koenraad.dhollander@iddi.com"), 
+    person("IDDI Belgium", role = "cph"))
+Description: Decision rules and simulation of model-assisted Phase I designs (3+3, BOIN, Keyboard).
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports:
+    data.table,
+    optiRum,
+    BOIN
