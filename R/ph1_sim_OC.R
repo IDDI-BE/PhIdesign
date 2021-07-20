@@ -3,7 +3,9 @@
 #' @title Simulation of Phase I study operating characteristics
 #' @description Simulation of Phase I study operating characteristics 
 #' @param nsim number of simulations
-#' @param scenarios list of scenario's (each vector: set of true DLT rate for each dose level)
+#' @param scenarios list of scenario's (each vector: set of true DLT rate for each dose level). 
+#'     Examples of scenarios can be found in a vignette accompanying this package. 
+#'     \href{../doc/help.html}{\code{vignette("scenarios", package = "PhIdesign")}}
 #' @param env parent environment (global) to pass scenario counter to global environment to print progress
 #' @param ...  see \code{\link{ph1_1sim}}
 #
