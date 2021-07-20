@@ -5,7 +5,7 @@ Tools for PhI clinical trial design (3+3, BOIN, Keyboard)
 
 The package is available under the GPL-2 License or any later version: https://www.gnu.org/licenses/gpl-2.0.html
 
-- For installing the development version of this package: `remotes::install_github("kdhollander/PhIdesign")`
+- For installing the development version of this package: `remotes::install_github("kdhollander/PhIdesign",build_vignettes=TRUE)`
 - Look to the documentation of the functions `help(package = "PhIdesign")`
 
 ## Support
