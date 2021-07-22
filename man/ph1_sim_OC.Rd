@@ -11,7 +11,7 @@ ph1_sim_OC(nsim, scenarios, env = parent.frame(), ...)
 
 \item{scenarios}{list of scenario's (each vector: set of true DLT rate for each dose level). 
 Examples of scenarios can be found in a vignette accompanying this package. 
-\href{../doc/help.html}{\code{vignette("scenarios", package = "PhIdesign")}}}
+For more details see the help vignette: \code{vignette("scenarios", package = "PhIdesign")}}
 
 \item{env}{parent environment (global) to pass scenario counter to global environment to print progress}
 
