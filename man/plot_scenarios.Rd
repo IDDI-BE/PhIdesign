@@ -12,7 +12,7 @@ plot_scenarios(scenarios, save_as)
 \item{save_as}{where to save output}
 }
 \value{
-plot
+plot (red: first design; blue: second design; green: third design)
 }
 \description{
 Plot scenarios of true DLT rates

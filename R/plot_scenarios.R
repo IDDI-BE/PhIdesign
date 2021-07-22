@@ -4,7 +4,7 @@
 #' @description Plot scenarios of true DLT rates
 #' @param scenarios scenarios of true DLT rates for each dose level. This also defines the number of dose levels
 #' @param save_as where to save output
-#' @return plot
+#' @return plot (red: first design; blue: second design; green: third design)
 #' @export
 #' @examples
 #' plot_scenarios(scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
