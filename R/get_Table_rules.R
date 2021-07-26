@@ -1,6 +1,6 @@
 
 #' @title Get table with summary of decision rules for phase I design
-#' @description Get table with summary of decision rules for phase I design (BOIN or Keyboard design)
+#' @description Get table with summary of decision rules for phase I design (BOIN, Keyboard or i3+3 design)
 #' @param N sample size
 #' @param phi target toxicity rate
 #' @param phi1 the highest DLT rate that is deemed subtherapeutic (i.e., underdosing), 
@@ -9,7 +9,7 @@
 #'     such that dose de-escalation is required
 #' @param maxtox P(DLT rate>phi|c,n)<=maxtox as value for maxprob in \code{\link{get_Elim_rules}}
 #' @param halfkey half length of key in keyboard design
-#' @param design "BOIN" or "Keyboard"
+#' @param design "BOIN" or "Keyboard" or "i3+3"
 #' @return a data.frame with elements
 #' \itemize{
 #' \item n: number of patients
@@ -25,6 +25,7 @@
 #' @examples
 #' BOIN_table<-get_Table_rules(N=21,phi=0.3,phi1=0.6*0.3,phi2=1.4*0.3,maxtox=0.95,design="BOIN")
 #' KEYB_table<-get_Table_rules(N=21,phi=0.3,maxtox=0.95,halfkey=0.05,design="Keyboard")
+#' i33_table<-get_Table_rules(N=21,phi=0.3,phi1=0.6*0.3,phi2=1.4*0.3,maxtox=0.95,design="i3+3")
 
 get_Table_rules<-function(N,phi,phi1=NULL,phi2=NULL,maxtox,halfkey=NULL,design){
 
@@ -52,11 +53,12 @@ get_Table_rules<-function(N,phi,phi1=NULL,phi2=NULL,maxtox,halfkey=NULL,design){
     DeEscalate    <- unique(res[D==1,c("n","D_min")],by="n")
     Retain        <- unique(res[R==1,c("n","R_min","R_max")],by="n")
 
-  }
-  
-  else if (design=="Keyboard"){
+  } else 
     
-    res <- get_Keyboard_rules(N=N,phi=phi,halfkey=halfkey)
+  if (design=="Keyboard" | design=="i3+3"){
+    
+    if (design=="Keyboard"){res <- get_Keyboard_rules(N=N,phi=phi,halfkey=halfkey)}
+    if (design=="i3+3")    {res <- get_i33_rules(N=N,phi=phi,phi1=phi1,phi2=phi2)}
     
     res <- res[, E_max:=max(x), by = list(n,decision)] # Get max(x) to escalate
     res <- res[, D_min:=min(x), by = list(n,decision)] # Get min(x) to de-escalate
@@ -70,11 +72,11 @@ get_Table_rules<-function(N,phi,phi1=NULL,phi2=NULL,maxtox,halfkey=NULL,design){
   
   Retain$Retain <-ifelse(Retain$R_min==Retain$R_max,Retain$R_min,
                          ifelse(Retain$R_min!=Retain$R_max,paste(Retain$R_min,Retain$R_max,sep="-"),NA))
-  alln          <- data.table::data.table(n=1:N)
-  Decision_ret  <- merge(alln,Retain[,c("n","Retain")],all=T); names(Decision_ret)[names(Decision_ret)=="Retain"]<-"R"
-  Decision      <- merge(Escalate,Decision_ret,by="n"); names(Decision)[names(Decision)=="E_max"]<-"E"
-  Decision$D    <- DeEscalate$D_min
-  Decision$Elim <- get_Elim_rules(Nmax=N,phi=phi,maxprob=maxtox)$c_STOP
+  alln            <- data.table::data.table(n=1:N)
+  Decision_R      <- merge(alln,Retain[,c("n","Retain")],by="n",all.x=TRUE); names(Decision_R)[names(Decision_R)=="Retain"]<-"R"
+  Decision_E      <- merge(Decision_R,Escalate,by="n",all.x=TRUE); names(Decision_E)[names(Decision_E)=="E_max"]<-"E"
+  Decision_D      <- merge(Decision_E,DeEscalate,by="n",all.x=TRUE); names(Decision_D)[names(Decision_D)=="D_min"]<-"D"
+  Decision_D$Elim <- get_Elim_rules(Nmax=N,phi=phi,maxprob=maxtox)$c_STOP
   
-  return(Decision)
+  return(Decision_D)
 }

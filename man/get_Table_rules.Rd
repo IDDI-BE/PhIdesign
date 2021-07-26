@@ -29,7 +29,7 @@ such that dose de-escalation is required}
 
 \item{halfkey}{half length of key in keyboard design}
 
-\item{design}{"BOIN" or "Keyboard"}
+\item{design}{"BOIN" or "Keyboard" or "i3+3"}
 }
 \value{
 a data.frame with elements
@@ -43,11 +43,12 @@ a data.frame with elements
 }
 }
 \description{
-Get table with summary of decision rules for phase I design (BOIN or Keyboard design)
+Get table with summary of decision rules for phase I design (BOIN, Keyboard or i3+3 design)
 }
 \examples{
 BOIN_table<-get_Table_rules(N=21,phi=0.3,phi1=0.6*0.3,phi2=1.4*0.3,maxtox=0.95,design="BOIN")
 KEYB_table<-get_Table_rules(N=21,phi=0.3,maxtox=0.95,halfkey=0.05,design="Keyboard")
+i33_table<-get_Table_rules(N=21,phi=0.3,phi1=0.6*0.3,phi2=1.4*0.3,maxtox=0.95,design="i3+3")
 }
 \references{
 Liu S, Yuan Y. Bayesian Optimal Interval Designs for Phase I Clinical Trials. 

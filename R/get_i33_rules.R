@@ -46,6 +46,6 @@ get_i33_rules<-function(N,phi,phi1,phi2){
       }
     }
   }
-  Decision<-res[,c("n","x","decision")]
+  Decision<- data.table::as.data.table(res[,c("n","x","decision")])
   return(Decision)
 }
