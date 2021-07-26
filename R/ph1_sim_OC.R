@@ -98,6 +98,10 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),...){
       key_dec <-get_Keyboard_rules(N=args$N,phi=args$phi,halfkey=args$halfkey)
     }
     
+    if (args$design=="i3+3"){
+      i33_dec <-get_i33_rules(N=args$N,phi=args$phi,phi1=args$phi1,phi2=args$phi2)
+    }
+    
     if (args$design=="BOIN"){
       BOIN_thres <- get_BOIN_rules(phi=args$phi,phi1=args$phi1,phi2=args$phi2)
       lambda_e <- BOIN_thres$lambda_e
