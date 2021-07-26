@@ -1,6 +1,6 @@
 
-#' @title Get table with summary of decision rules for phase I design
-#' @description Get table with summary of decision rules for phase I design (BOIN or Keyboard design)
+#' @title Get Keyboard decision rules for phase I design
+#' @description Get Keyboard decision rules for phase I design
 #' @param N sample size
 #' @param phi target toxicity rate
 #' @param halfkey half length of key in keyboard design

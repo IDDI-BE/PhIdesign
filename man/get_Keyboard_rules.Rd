@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_Keyboard_rules.R
 \name{get_Keyboard_rules}
 \alias{get_Keyboard_rules}
-\title{Get table with summary of decision rules for phase I design}
+\title{Get Keyboard decision rules for phase I design}
 \usage{
 get_Keyboard_rules(N, phi, halfkey)
 }
@@ -22,7 +22,7 @@ a data.frame with elements
 }
 }
 \description{
-Get table with summary of decision rules for phase I design (BOIN or Keyboard design)
+Get Keyboard decision rules for phase I design
 }
 \details{
 A uniform Beta(1,1) prior is used to calculate the posterior Bayesian probability for each 'key'
