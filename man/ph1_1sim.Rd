@@ -25,10 +25,10 @@ ph1_1sim(
 \arguments{
 \item{phi}{target toxicity rate (needed for all designs)}
 
-\item{phi1}{for BOIN design: the highest DLT rate that is deemed subtherapeutic (i.e., underdosing), 
+\item{phi1}{for BOIN/i3+3 design: the highest DLT rate that is deemed subtherapeutic (i.e., underdosing), 
 such that dose escalation should be made, see \code{\link{get_BOIN_rules}}}
 
-\item{phi2}{for BOIN design: the lowest DLT rate that is deemed overly toxic (i.e., overdosing), 
+\item{phi2}{for BOIN/i3+3 design: the lowest DLT rate that is deemed overly toxic (i.e., overdosing), 
 such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 
 \item{maxtox}{P(DLT rate>phi|c,n)<=maxtox as value for maxprob in \code{\link{get_Elim_rules}}}
@@ -43,7 +43,7 @@ such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 
 \item{acc_tit}{logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT}
 
-\item{design}{"BOIN" or "Keyboard"}
+\item{design}{"BOIN" or "Keyboard" or "i3+3"}
 
 \item{MTD_safer}{logical indicator for ...}
 
@@ -65,7 +65,7 @@ a data.frame with elements
 }
 \description{
 Simulation of one Phase I study with classical 3+3 design, 
-    BOIN design or Keyboard design
+    BOIN, Keyboard or i3+3 design
 }
 \examples{
 ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
@@ -74,6 +74,9 @@ design="BOIN", MTD_safer=TRUE)
 ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=30, 
 truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=1, 
 design="Keyboard", MTD_safer=TRUE, halfkey=0.05)
+ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
+truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
+design="i3+3", MTD_safer=TRUE)
 ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 }
 \references{

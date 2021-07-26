@@ -1,11 +1,11 @@
 
 #' @title Simulation of one Phase I study
 #' @description Simulation of one Phase I study with classical 3+3 design, 
-#'     BOIN design or Keyboard design
+#'     BOIN, Keyboard or i3+3 design
 #' @param phi target toxicity rate (needed for all designs)
-#' @param phi1 for BOIN design: the highest DLT rate that is deemed subtherapeutic (i.e., underdosing), 
+#' @param phi1 for BOIN/i3+3 design: the highest DLT rate that is deemed subtherapeutic (i.e., underdosing), 
 #'     such that dose escalation should be made, see \code{\link{get_BOIN_rules}}
-#' @param phi2 for BOIN design: the lowest DLT rate that is deemed overly toxic (i.e., overdosing), 
+#' @param phi2 for BOIN/i3+3 design: the lowest DLT rate that is deemed overly toxic (i.e., overdosing), 
 #'     such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}
 #' @param halfkey for Keyboard design: half length of key in keyboard design, see \code{\link{get_Keyboard_rules}}
 #' @param maxtox P(DLT rate>phi|c,n)<=maxtox as value for maxprob in \code{\link{get_Elim_rules}}
@@ -14,7 +14,7 @@
 #' @param cohortsize cohort size, default is 3
 #' @param maxNretain If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9
 #' @param acc_tit logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT
-#' @param design "BOIN" or "Keyboard"
+#' @param design "BOIN" or "Keyboard" or "i3+3"
 #' @param MTD_safer logical indicator for ...
 #' @param seed define seed
 #' @param sim if "NO", calculate decision rules, define "YES" if done within simulation program for multiple studies
@@ -36,9 +36,11 @@
 #' ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=30, 
 #' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=1, 
 #' design="Keyboard", MTD_safer=TRUE, halfkey=0.05)
+#' ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
+#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
+#' design="i3+3", MTD_safer=TRUE)
 #' ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 
-# phi=args$phi;phi1=args$phi_1;phi2=args$phi2;maxtox=args$maxtox; N=args$N;truerate=args$truerate;cohortsize=args$cohortsize;maxNretain=args$maxNretain;acc_tit=args$acc_tit; design=args$design; MTD_safer=args$MTD_safer; halfkey=args$halfkey; sim=args$sim
 
 ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
                       design, MTD_safer=NULL, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
@@ -75,6 +77,10 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NU
       key_dec <-get_Keyboard_rules(N=N,phi=phi,halfkey=halfkey)
     }
     
+    if (design=="i3+3"){
+      i33_dec <-get_i33_rules(N=N,phi=phi,phi1=phi1,phi2=phi2)
+    }
+    
     if (design=="BOIN"){
       
       BOIN_thres <- get_BOIN_rules(phi=phi,phi1=phi1,phi2=phi2)
@@ -91,6 +97,10 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NU
     
     if (design=="Keyboard"){
       key_dec <-env$key_dec
+    }
+    
+    if (design=="i3+3"){
+      i33_dec <-env$i33_dec
     }
     
     if (design=="BOIN"){
@@ -288,11 +298,14 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NU
     #cbind(dose,npt,ndlt,p_hat,p_iso,MTD)
   }
   
-  #------------------#
-  # Keyboard design  #
-  #------------------#
+  #--------------------------#
+  # Keyboard or i3+3 design  #
+  #--------------------------#
   
-  if (design=="Keyboard"){
+  if (design=="Keyboard" | design=="i3+3"){
+    
+    if (design=="Keyboard"){dec<-key_dec}
+    if (design=="i3+3")    {dec<-i33_dec}
     
     while ((N-n)>= cohortsize) {
       
@@ -322,7 +335,7 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NU
       # Get correct decision for dose under investigation #
       #---------------------------------------------------#
       
-      decision<-key_dec[key_dec$n==npt[dose_inv] & key_dec$x==ndlt[dose_inv],"decision"]
+      decision<-dec[dec$n==npt[dose_inv] & dec$x==ndlt[dose_inv],"decision"]
       
       if (decision=="E") {
         if ( (dose_inv+1) %in% dose_in_the_running){dose_inv <- dose_inv+1} else
@@ -350,7 +363,10 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NU
       
       p_iso[npt>0]  <- as.numeric(as.character(BOIN::select.mtd(target=phi, npts=npt[npt>0], ntox=ndlt[npt>0])$p_est$phat)) # Get isotonic estimates
       # which lower than lambda_d
-      safe_choice <- which(p_iso<phi+halfkey)
+      
+      if (design=="Keyboard"){safe_choice <- which(p_iso<phi+halfkey)}
+      if (design=="i3+3")    {safe_choice <- which(p_iso<phi2)}
+      
       # of those, which closest to phi
       if (length(safe_choice)!=0){
         distance<- abs(p_iso[safe_choice]-phi)
