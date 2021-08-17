@@ -16,7 +16,7 @@ plot_scenarios<-function(scenarios,save_as){
   par(mar=c(4,4,0,2),lwd=1.2, cex.axis=1, cex.main=1)
   plot(1:length(scenarios[[1]]),scenarios[[1]],type="b",ylim=c(0,1),col=1,ylab="True DLT rate",xlab="Dose level")
   for (i in 2:length(scenarios)){
-    lines(1:6,scenarios[[i]],type="b",col=i)
+    lines(1:length(scenarios[[1]]),scenarios[[i]],type="b",col=i)
   }
   abline(h=0.3,lty=2,col="red",lwd=2)
   dev.off()
