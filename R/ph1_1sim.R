@@ -43,7 +43,7 @@
 
 
 ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
-                      design, MTD_safer=NULL, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
+                      design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
   
   if (!is.null(seed)) {
     set.seed(seed)
