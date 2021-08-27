@@ -15,7 +15,7 @@
 #' @param maxNretain If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9
 #' @param acc_tit logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT
 #' @param design "BOIN" or "Keyboard" or "i3+3"
-#' @param MTD_safer logical indicator for ...
+#' @param MTD_safer imposes that the MTD should be for 1)BOIN:<lambda_d, 2)Keyboard:<phi+halfkey, 3)i3+3:<phi2
 #' @param seed define seed
 #' @param sim if "NO", calculate decision rules, define "YES" if done within simulation program for multiple studies
 #' @param env parent environment to pass objects from \code{\link{ph1_sim_OC}}
