@@ -27,7 +27,8 @@ ph1_sim_OC_plot(
 plot
 }
 \description{
-Plot operating characteristics of phase 1 design
+Plot operating characteristics of phase 1 design. First design is "blue", second one"red",
+    and third one "darkgreen"
 }
 \examples{
 BOIN<-ph1_sim_OC(nsim=10, scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),

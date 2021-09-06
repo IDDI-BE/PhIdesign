@@ -1,6 +1,7 @@
 
 #' @title Plot operating characteristics of phase 1 design
-#' @description Plot operating characteristics of phase 1 design
+#' @description Plot operating characteristics of phase 1 design. First design is "blue", second one"red",
+#'     and third one "darkgreen"
 #' @param ph1_sim_OC_output list of output objects of \code{\link{ph1_sim_OC}}
 #' @param ylim_N max N for plots with number of patients (typically max sample size of 3+3 design)
 #' @param save_as where to save output

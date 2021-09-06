@@ -15,7 +15,7 @@ ph1_1sim(
   maxNretain = NULL,
   acc_tit,
   design,
-  MTD_safer = NULL,
+  MTD_safer = TRUE,
   seed = NULL,
   halfkey = NULL,
   sim = "NO",
@@ -45,7 +45,7 @@ such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 
 \item{design}{"BOIN" or "Keyboard" or "i3+3"}
 
-\item{MTD_safer}{logical indicator for ...}
+\item{MTD_safer}{imposes that the MTD should be for 1)BOIN:<lambda_d, 2)Keyboard:<phi+halfkey, 3)i3+3:<phi2}
 
 \item{seed}{define seed}
 
@@ -71,7 +71,7 @@ Simulation of one Phase I study with classical 3+3 design,
 ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
 truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
 design="BOIN", MTD_safer=TRUE)
-ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=30, 
+ph1_1sim(phi=0.3, maxtox=0.95, N=30, 
 truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=1, 
 design="Keyboard", MTD_safer=TRUE, halfkey=0.05)
 ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
