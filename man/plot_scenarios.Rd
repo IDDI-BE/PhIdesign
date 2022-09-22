@@ -4,9 +4,11 @@
 \alias{plot_scenarios}
 \title{Plot scenarios of true DLT rates}
 \usage{
-plot_scenarios(scenarios, save_as)
+plot_scenarios(DLT_target_rate, scenarios, save_as)
 }
 \arguments{
+\item{DLT_target_rate}{DLT target rate (to put horizontal line for reference)}
+
 \item{scenarios}{scenarios of true DLT rates for each dose level. This also defines the number of dose levels}
 
 \item{save_as}{where to save output}
@@ -18,7 +20,8 @@ plot (red: first design; blue: second design; green: third design)
 Plot scenarios of true DLT rates
 }
 \examples{
-plot_scenarios(scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
+plot_scenarios(DLT_target_rate=0.3,
+               scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
                               c(0.30 ,0.40 ,0.50 ,0.60 ,0.70 ,0.80)),
                               save_as="C:/Users/kdhollander/Desktop/test")
 }
