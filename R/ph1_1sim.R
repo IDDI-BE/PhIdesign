@@ -41,7 +41,6 @@
 #' design="i3+3", MTD_safer=TRUE)
 #' ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 
-
 ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
                       design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
   

@@ -4,7 +4,14 @@
 \alias{ph1_sim_OC}
 \title{Simulation of Phase I study operating characteristics}
 \usage{
-ph1_sim_OC(nsim, scenarios, env = parent.frame(), ...)
+ph1_sim_OC(
+  nsim,
+  scenarios,
+  env = parent.frame(),
+  OD_cut = c(0.6, 0.8),
+  OD_delta = 0,
+  ...
+)
 }
 \arguments{
 \item{nsim}{number of simulations}
@@ -14,6 +21,11 @@ Examples of scenarios can be found in a vignette accompanying this package.
 For more details see the help vignette: \code{vignette("scenarios", package = "PhIdesign")}}
 
 \item{env}{parent environment (global) to pass scenario counter to global environment to print progress}
+
+\item{OD_cut}{% of patients > OD_cut with overdose for overdose_1 and overdose_2 outcomes; should be 
+vector of 2. Default value is c(0.6,0.8)}
+
+\item{OD_delta}{dose level with toxicity >phi+OD_delta is considered as overdose. Default value is zero.}
 
 \item{...}{see \code{\link{ph1_1sim}}}
 }
@@ -40,8 +52,8 @@ a list containing of a matrix (results by dose level) and a vector (overall resu
 \item [[2]]$avg_nDLT: average number of observed DLTs
 \item [[2]]$avg_SS: average sample size of all simulated trials
 \item [[2]]$max_SS: maximum sample size of all simulated trials
-\item [[2]]$overdose60: percent simulated trials in which >=60% of patients is assigned to a dose with DLT rate >phi
-\item [[2]]$overdose80: percent simulated trials in which >=80% of patients is assigned to a dose with DLT rate >phi
+\item [[2]]$overdose_1: percent simulated trials in which >=OD_cut[1] of patients is assigned to a dose with DLT rate >phi
+\item [[2]]$overdose_2: percent simulated trials in which >=OD_cut[2] of patients is assigned to a dose with DLT rate >phi
 \item [[3]] labels for item[[2]]
 }
 }

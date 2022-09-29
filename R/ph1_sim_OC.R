@@ -7,6 +7,9 @@
 #' Examples of scenarios can be found in a vignette accompanying this package. 
 #' For more details see the help vignette: \code{vignette("scenarios", package = "PhIdesign")}
 #' @param env parent environment (global) to pass scenario counter to global environment to print progress
+#' @param OD_cut % of patients > OD_cut with overdose for overdose_1 and overdose_2 outcomes; should be 
+#' vector of 2. Default value is c(0.6,0.8)
+#' @param OD_delta dose level with toxicity >phi+OD_delta is considered as overdose. Default value is zero. 
 #' @param ...  see \code{\link{ph1_1sim}}
 #
 #' @return a list containing of a matrix (results by dose level) and a vector (overall results)
@@ -31,8 +34,8 @@
 #' \item [[2]]$avg_nDLT: average number of observed DLTs
 #' \item [[2]]$avg_SS: average sample size of all simulated trials
 #' \item [[2]]$max_SS: maximum sample size of all simulated trials
-#' \item [[2]]$overdose60: percent simulated trials in which >=60% of patients is assigned to a dose with DLT rate >phi
-#' \item [[2]]$overdose80: percent simulated trials in which >=80% of patients is assigned to a dose with DLT rate >phi
+#' \item [[2]]$overdose_1: percent simulated trials in which >=OD_cut[1] of patients is assigned to a dose with DLT rate >phi
+#' \item [[2]]$overdose_2: percent simulated trials in which >=OD_cut[2] of patients is assigned to a dose with DLT rate >phi
 #' \item [[3]] labels for item[[2]]
 #' }
 #' @references Liu S, Yuan Y. Bayesian Optimal Interval Designs for Phase I Clinical Trials. 
@@ -54,7 +57,8 @@
 #'    phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=18, 
 #'    cohortsize=3, maxNretain=9, acc_tit=0, design="BOIN", MTD_safer=TRUE)
 
-ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),...){ 
+# nsim=100;scenarios=list(c(0, 0.05 ,0.15));env=parent.frame() # for debug
+ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),OD_cut=c(0.6,0.8),OD_delta=0,...){ 
   
   res<-list()
   
@@ -73,7 +77,7 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),...){
     
     # Get ... arguments to be used by 'ph1_1sim' funtion
     #-------------------------------------------------
-    
+    # args<-list(phi=0.1,phi1=0.2*0.1,phi2=2.2*0.1, maxtox=0.95, N=15, cohortsize=3, maxNretain=9, acc_tit=0, design="3+3", MTD_safer=TRUE);s=1 # for debug
     args<-list(...) # these are the arguments for the 'ph1_1sim' function (see function arguments above, and use with "args" here below)
     args$sim<-"YES" # Don't calculate thresholds in ph1_1sim function, rather only once in sim function
     
@@ -121,7 +125,7 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),...){
       npt [i,]         <- result[,"npt"]
       ndlt[i,]         <- result[,"ndlt"]
       MTD [i,]         <- result[,"MTD"]
-      overdose_pct [i] <- sum(result[args$truerate>args$phi,"npt"])/sum(result[,"npt"])
+      overdose_pct [i] <- sum(result[args$truerate>args$phi+OD_delta,"npt"])/sum(result[,"npt"]) # %(patients) in one trial which is overdosed (i.e. treated with dose level with toxicity rate above target)
       
       if ((sum(result[,"MTD"])!=0)) {npt_MTDselect[i] <- result[result[,"MTD"]==1,"npt"]} else {npt_MTDselect[i]<-0} # Number of patients treated at selected MTD (not target rate)
     }
@@ -138,34 +142,34 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),...){
     if (args$phi %in% args$truerate){
       sel_at_phi_pct     <- sel_pct_dose[args$truerate==args$phi]
       avg_pct_pts_at_phi <- mean(npt[,   args$truerate==args$phi]/apply(npt,1,sum))} else {
-      sel_at_phi_pct     <- NA
-      avg_pct_pts_at_phi <- NA}
+      sel_at_phi_pct     <- NA  # % Selection at target
+      avg_pct_pts_at_phi <- NA} # Average %(patients) at target
     
     if (any((args$phi-0.05) <= args$truerate & (args$phi+0.05)>=args$truerate)){
       sel_at_phi_rng_pct     <- sum(sel_pct_dose[args$truerate>=(args$phi-0.05) & args$truerate<=(args$phi+0.05)])
       avg_pct_pts_at_phi_rng <- mean(apply(npt[, args$truerate>=(args$phi-0.05) & args$truerate<=(args$phi+0.05),drop=FALSE],1,sum)/apply(npt,1,sum))} else {
-      sel_at_phi_rng_pct     <- NA
-      avg_pct_pts_at_phi_rng <- NA}
+      sel_at_phi_rng_pct     <- NA  # % Selection at target +/-0.05
+      avg_pct_pts_at_phi_rng <- NA} # Average %(patients) at target +/-0.05
     
     if (any(args$truerate<args$phi-0.05)){
       sel_below_phi_pct     <- sum(sel_pct_dose[args$truerate<(args$phi-0.05)])
       avg_pct_pts_below_phi <- mean(apply(npt[, args$truerate<(args$phi-0.05),drop=FALSE],1,sum)/apply(npt,1,sum))} else {
-      sel_below_phi_pct     <- NA
-      avg_pct_pts_below_phi <- NA}
+      sel_below_phi_pct     <- NA  # % Selection at < target -0.05
+      avg_pct_pts_below_phi <- NA} # Average %(patients) at < target -0.05
     
     if (any(args$truerate>args$phi+0.05)){
       sel_above_phi_pct     <- sum(sel_pct_dose[args$truerate>(args$phi+0.05)])
       avg_pct_pts_above_phi <- mean(apply(npt[, args$truerate>(args$phi+0.05),drop=FALSE],1,sum)/apply(npt,1,sum))} else {
-      sel_above_phi_pct     <- NA
-      avg_pct_pts_above_phi <- NA}    
+      sel_above_phi_pct     <- NA  # % Selection at > target +0.05
+      avg_pct_pts_above_phi <- NA} # Average %(patients) at > target +0.05   
     
-    noMTD            <- sum(apply(MTD,1,sum)==0)/nsim
-    avg_SS           <- mean(apply(npt,1,sum))
-    max_SS           <- max(apply(npt,1,sum))
-    avg_npt_MTD_sel  <- sum(npt_MTDselect[npt_MTDselect>0])/length(npt_MTDselect[npt_MTDselect>0])
-    avg_nDLT         <- mean(apply(ndlt,1,sum))
-    overdose60       <- sum(overdose_pct>=0.6)/nsim
-    overdose80       <- sum(overdose_pct>=0.8)/nsim
+    noMTD            <- sum(apply(MTD,1,sum)==0)/nsim # % No MTD selection
+    avg_SS           <- mean(apply(npt,1,sum))        # Average sample size
+    max_SS           <- max(apply(npt,1,sum))         # Max sample size
+    avg_npt_MTD_sel  <- sum(npt_MTDselect[npt_MTDselect>0])/length(npt_MTDselect[npt_MTDselect>0]) # Average N(patients at selected MTD)
+    avg_nDLT         <- mean(apply(ndlt,1,sum))       # Average N(patients with DLT)
+    overdose_1       <- sum(overdose_pct>=OD_cut[1])/nsim
+    overdose_2       <- sum(overdose_pct>=OD_cut[2])/nsim
     
     # Collect simulation results in one list
     #---------------------------------------
@@ -176,13 +180,13 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),...){
                   avg_npt_MTD_sel=avg_npt_MTD_sel,avg_nDLT=avg_nDLT,
                   sel_at_phi_pct=sel_at_phi_pct,sel_at_phi_rng_pct=sel_at_phi_rng_pct,sel_below_phi_pct=sel_below_phi_pct,sel_above_phi_pct=sel_above_phi_pct,noMTD=noMTD,
                   avg_pct_pts_at_phi=avg_pct_pts_at_phi,avg_pct_pts_at_phi_rng=avg_pct_pts_at_phi_rng,avg_pct_pts_below_phi=avg_pct_pts_below_phi,avg_pct_pts_above_phi=avg_pct_pts_above_phi,
-                  overdose60=overdose60,overdose80=overdose80),
+                  overdose_1=overdose_1,overdose_2=overdose_2),
                  c("design","nsim",
                    "Average sample size","Max sample size",
                    "Average N(patients) at selected MTD","Average N(patients) with DLT",
-                   "% Correct MTD selection","% Selection at target +/-0.05","% Selection at < target -0.05","% Selection at > target +0.05","% No MTD selection",
+                   "% Selected MTD=at target","% Selection at target +/-0.05","% Selection at < target -0.05","% Selection at > target +0.05","% No MTD selection",
                    "Average %(patients) at target","Average %(patients) at target +/-0.05","Average %(patients) at <target -0.05","Average %(patients) at >target +0.05",
-                   "Risk of overdosing >= 60% of patients","Risk of overdosing >= 80% of patients"))
+                   paste0("Risk of overdosing >=",OD_cut[1]*100,"% of patients"),paste0("Risk of overdosing >=",OD_cut[2]*100,"% of patients")))
     
   }
   
