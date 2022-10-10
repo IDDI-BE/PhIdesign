@@ -8,6 +8,7 @@ ph1_1sim(
   phi,
   phi1 = NULL,
   phi2 = NULL,
+  start_dose = 1,
   maxtox = NULL,
   N = NULL,
   truerate = NULL,
@@ -30,6 +31,8 @@ such that dose escalation should be made, see \code{\link{get_BOIN_rules}}}
 
 \item{phi2}{for BOIN/i3+3 design: the lowest DLT rate that is deemed overly toxic (i.e., overdosing), 
 such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
+
+\item{start_dose}{which dose to start with (could be for instance the second dose level)}
 
 \item{maxtox}{P(DLT rate>phi|c,n)<=maxtox as value for maxprob in \code{\link{get_Elim_rules}}}
 

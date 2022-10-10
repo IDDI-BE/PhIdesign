@@ -7,6 +7,7 @@
 #'     such that dose escalation should be made, see \code{\link{get_BOIN_rules}}
 #' @param phi2 for BOIN/i3+3 design: the lowest DLT rate that is deemed overly toxic (i.e., overdosing), 
 #'     such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}
+#' @param start_dose which dose to start with (could be for instance the second dose level)     
 #' @param halfkey for Keyboard design: half length of key in keyboard design, see \code{\link{get_Keyboard_rules}}
 #' @param maxtox P(DLT rate>phi|c,n)<=maxtox as value for maxprob in \code{\link{get_Elim_rules}}
 #' @param N number of patients (not needed for design="3+3")
@@ -41,7 +42,8 @@
 #' design="i3+3", MTD_safer=TRUE)
 #' ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 
-ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
+# truerate=c(0.1  ,0.15 ,0.2 );phi=0.1; phi1=0.6*0.1 ; phi2=2.2*0.1 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxNretain=15; acc_tit=0; design="BOIN"; MTD_safer=TRUE 
+ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
                       design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
   
   if (!is.null(seed)) {
@@ -58,7 +60,7 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, maxtox=NULL, N=NULL,truerate=NU
   npt  <- ndlt <- MTD  <- rep(0,ndose)
   p_iso<-rep(NA,ndose)
   
-  dose_inv <- 1 # initialize "dose under investigation"
+  dose_inv <- start_dose # initialize "dose under investigation"
   n        <- 0 # number of patients in study, for first dose
   mtd      <- NA # initializing scalar for dose level equal to MTD
   
