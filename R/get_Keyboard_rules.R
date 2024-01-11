@@ -1,4 +1,13 @@
 
+CJ.dt <- function(X, Y) {
+  k <- NULL
+  X <- X[, c(k = 1, .SD)]
+  data.table::setkey(X, k)
+  Y <- Y[, c(k = 1, .SD)]
+  data.table::setkey(Y, NULL)
+  X[Y, allow.cartesian = TRUE][, `:=`(k, NULL)]
+} 
+
 #' @title Get Keyboard decision rules for phase I design
 #' @description Get Keyboard decision rules for phase I design
 #' @param N sample size
@@ -26,7 +35,7 @@ get_Keyboard_rules<-function(N,phi,halfkey){
   res <- lapply(1:N, FUN=function(n) cbind(n = n, x = 0:n)) # create dataset with for each N, all possible outcomes (nr of DLTs)
   res <- data.table::as.data.table(do.call(rbind,  res))
   
-  res <- optiRum::CJ.dt(res,key)
+  res <- CJ.dt(res,key)
   res <- res[order(n,x,key)]
   
   res <- cbind(res[1:(dim(res)[1]-1),],res[2:(dim(res)[1]),"key"])
