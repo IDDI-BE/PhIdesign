@@ -31,6 +31,7 @@ Plot operating characteristics of phase 1 design. First design is "blue", second
     and third one "darkgreen"
 }
 \examples{
+\dontrun{
 BOIN<-ph1_sim_OC(nsim=10, scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
                                          c(0.30 ,0.40 ,0.50 ,0.60 ,0.70 ,0.80),
                                          c(0.30 ,0.35 ,0.40 ,0.60 ,0.75 ,0.90),
@@ -59,4 +60,5 @@ three<-ph1_sim_OC(nsim=10, scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
                phi=0.3, design="3+3",acc_tit=1)
 ph1_sim_OC_plot(ph1_sim_OC_output=list(BOIN,three), 
 ylim_N=36,save_as="C:/Users/kdhollander/Desktop/test", outcomes=c(3:17))
+}
 }

@@ -20,8 +20,10 @@ plot (red: first design; blue: second design; green: third design)
 Plot scenarios of true DLT rates
 }
 \examples{
+\dontrun{
 plot_scenarios(DLT_target_rate=0.3,
                scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
                               c(0.30 ,0.40 ,0.50 ,0.60 ,0.70 ,0.80)),
                               save_as="C:/Users/kdhollander/Desktop/test")
+}
 }

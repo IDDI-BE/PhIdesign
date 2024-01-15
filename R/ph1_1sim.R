@@ -15,6 +15,7 @@
 #' @param cohortsize cohort size, default is 3
 #' @param maxNretain If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9
 #' @param acc_tit logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT
+#' @param dose_no_titr first dose at which no accelerated titration anymore
 #' @param design "BOIN" or "Keyboard" or "i3+3"
 #' @param MTD_safer imposes that the MTD should be for 1)BOIN:<lambda_d, 2)Keyboard:<phi+halfkey, 3)i3+3:<phi2
 #' @param seed define seed
@@ -42,9 +43,10 @@
 #' design="i3+3", MTD_safer=TRUE)
 #' ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 
-# truerate=c(0.1  ,0.15 ,0.2 );phi=0.1; phi1=0.6*0.1 ; phi2=2.2*0.1 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxNretain=15; acc_tit=0; design="BOIN"; MTD_safer=TRUE 
+# truerate=c(0.1  ,0.15 ,0.2 );phi=0.1; phi1=0.6*0.1 ; phi2=2.2*0.1 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxNretain=15; 
+# acc_tit=0; dose_no_titr=NULL; design="BOIN"; MTD_safer=TRUE 
 ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
-                      design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
+                      dose_no_titr=NULL,design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
   
   if (!is.null(seed)) {
     set.seed(seed)
@@ -53,7 +55,9 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
   #-----------------------------------------------------------#
   # First dose: Create empty vectors and initialize variables #
   #-----------------------------------------------------------#
-
+  
+  if(is.null(dose_no_titr)){dose_no_titr<-length(truerate)}
+  
   ndose<-length(truerate)
   
   dose_in_the_running <- dose <- 1:ndose
@@ -127,7 +131,7 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         if (dose_inv!= ndose){dose_inv <- dose_inv + 1} else # Stay in accelerated titration phase
           if (dose_inv== ndose){break}                         # Go to cohort-wise dose-escalation algorithm
       }
-      if (dlt==1){break}  # Go to cohort-wise dose-escalation algorithm
+      if (dlt==1 | dose_inv==dose_no_titr){break}  # Go to cohort-wise dose-escalation algorithm
     }
   }
   

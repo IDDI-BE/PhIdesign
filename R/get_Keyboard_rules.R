@@ -1,5 +1,6 @@
 
 CJ.dt <- function(X, Y) {
+  .SD<-NULL
   k <- NULL
   X <- X[, c(k = 1, .SD)]
   data.table::setkey(X, k)

@@ -15,6 +15,7 @@ ph1_1sim(
   cohortsize = NULL,
   maxNretain = NULL,
   acc_tit,
+  dose_no_titr = NULL,
   design,
   MTD_safer = TRUE,
   seed = NULL,
@@ -45,6 +46,8 @@ such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 \item{maxNretain}{If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9}
 
 \item{acc_tit}{logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT}
+
+\item{dose_no_titr}{first dose at which no accelerated titration anymore}
 
 \item{design}{"BOIN" or "Keyboard" or "i3+3"}
 

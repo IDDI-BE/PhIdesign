@@ -8,10 +8,12 @@
 #' @return plot (red: first design; blue: second design; green: third design)
 #' @export
 #' @examples
+#' \dontrun{
 #' plot_scenarios(DLT_target_rate=0.3,
 #'                scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
 #'                               c(0.30 ,0.40 ,0.50 ,0.60 ,0.70 ,0.80)),
 #'                               save_as="C:/Users/kdhollander/Desktop/test")
+#'}
 
 plot_scenarios<-function(DLT_target_rate,scenarios,save_as){
   png(filename=paste0(save_as,"_",Sys.Date(),".png"),width=600,height=400)

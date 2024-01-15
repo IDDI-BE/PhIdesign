@@ -10,6 +10,7 @@
 #' @return plot
 #' @export
 #' @examples
+#' \dontrun{
 #' BOIN<-ph1_sim_OC(nsim=10, scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
 #'                                          c(0.30 ,0.40 ,0.50 ,0.60 ,0.70 ,0.80),
 #'                                          c(0.30 ,0.35 ,0.40 ,0.60 ,0.75 ,0.90),
@@ -38,6 +39,7 @@
 #'                phi=0.3, design="3+3",acc_tit=1)
 #' ph1_sim_OC_plot(ph1_sim_OC_output=list(BOIN,three), 
 #' ylim_N=36,save_as="C:/Users/kdhollander/Desktop/test", outcomes=c(3:17))
+#' }
 
 ph1_sim_OC_plot<- function(ph1_sim_OC_output, ylim_N, save_as, outcomes=c(3:17), layout=c(5,3)){
   
