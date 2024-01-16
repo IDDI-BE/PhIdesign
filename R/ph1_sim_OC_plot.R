@@ -48,9 +48,8 @@ ph1_sim_OC_plot<- function(ph1_sim_OC_output, ylim_N, save_as, outcomes=c(3:17),
   
   png(filename=paste0(save_as,"_",Sys.Date(),".png"),width=1000,height=1000)
   
-    par(oma = c(1,1,1,1))
+    par(oma = c(1,1,5,1))
     par(mfrow=layout, mar=c(1.5,1.5,4,1),lwd=2, cex.axis=1.5, cex.main=2)
-    mtext(title, outer=TRUE, cex = 1.5)
     
     ds         <- ph1_sim_OC_output
     N_design   <- length(ds)
@@ -83,6 +82,7 @@ ph1_sim_OC_plot<- function(ph1_sim_OC_output, ylim_N, save_as, outcomes=c(3:17),
         }
         
         grid()
+        mtext(title, outer=TRUE, cex = 1.5)
         
       }
     }
