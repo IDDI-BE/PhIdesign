@@ -120,7 +120,8 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),OD_cut=c(0.6,0.8),OD_delt
       
       # run one simulation
       
-      result <- ph1_1sim(phi=args$phi,phi1=args$phi1,phi2=args$phi2,maxtox=args$maxtox, N=args$N,truerate=args$truerate,cohortsize=args$cohortsize,maxNretain=args$maxNretain,acc_tit=args$acc_tit, design=args$design, MTD_safer=args$MTD_safer, halfkey=args$halfkey, sim=args$sim)
+      result <- ph1_1sim(phi=args$phi,phi1=args$phi1,phi2=args$phi2,maxtox=args$maxtox, N=args$N,truerate=args$truerate,cohortsize=args$cohortsize,maxNretain=args$maxNretain,
+                         acc_tit=args$acc_tit, dose_no_titr=args$dose_no_titr, design=args$design, MTD_safer=args$MTD_safer, halfkey=args$halfkey, sim=args$sim)
       result
       npt [i,]         <- result[,"npt"]
       ndlt[i,]         <- result[,"ndlt"]
