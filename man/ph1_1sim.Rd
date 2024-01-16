@@ -16,6 +16,7 @@ ph1_1sim(
   maxNretain = NULL,
   acc_tit,
   dose_no_titr = NULL,
+  BOIN_add33_rule = F,
   design,
   MTD_safer = TRUE,
   seed = NULL,
@@ -48,6 +49,8 @@ such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 \item{acc_tit}{logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT}
 
 \item{dose_no_titr}{first dose at which no accelerated titration anymore}
+
+\item{BOIN_add33_rule}{logical indicator: modify the decision from de-escalation to stay when observing 1 DLT out of 3 patients}
 
 \item{design}{"BOIN" or "Keyboard" or "i3+3"}
 

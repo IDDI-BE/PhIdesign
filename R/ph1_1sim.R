@@ -16,6 +16,7 @@
 #' @param maxNretain If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9
 #' @param acc_tit logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT
 #' @param dose_no_titr first dose at which no accelerated titration anymore
+#' @param BOIN_add33_rule logical indicator: modify the decision from de-escalation to stay when observing 1 DLT out of 3 patients
 #' @param design "BOIN" or "Keyboard" or "i3+3"
 #' @param MTD_safer imposes that the MTD should be for 1)BOIN:<lambda_d, 2)Keyboard:<phi+halfkey, 3)i3+3:<phi2
 #' @param seed define seed
@@ -46,7 +47,7 @@
 # truerate=c(0.1  ,0.15 ,0.2 );phi=0.25; phi1=0.6*0.25 ; phi2=1.4*0.25 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxNretain=15; 
 # acc_tit=0; dose_no_titr=NULL; design="BOIN"; MTD_safer=TRUE 
 ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
-                      dose_no_titr=NULL,design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
+                      dose_no_titr=NULL, BOIN_add33_rule=F, design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
   
   if (!is.null(seed)) {
     set.seed(seed)
@@ -252,9 +253,13 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
       
       phat <-p_hat[dose_inv]
       
-      if (phat<=lambda_e)               {decision<-"E"}  # Escalate
-      if (phat>=lambda_d)               {decision<-"D"}  # De-escalate
-      if (lambda_e<phat & phat<lambda_d){decision<-"R"}  # Retain
+      if (phat<=lambda_e)               {decision<-"E"} else  # Escalate
+      if (phat>=lambda_d)               {decision<-"D"} else  # De-escalate
+      if (lambda_e<phat & phat<lambda_d){decision<-"R"}       # Retain
+      
+      if (!is.null(BOIN_add33_rule)){
+        if (BOIN_add33_rule==T & npt[dose_inv]==3){if (phat==1/3){decision<-"R"}}
+      } 
       
       
       if (decision=="E") {
