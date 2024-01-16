@@ -74,7 +74,7 @@ get_Table_rules<-function(N,phi,phi1=NULL,phi2=NULL,maxtox,halfkey=NULL,design){
                          ifelse(Retain$R_min!=Retain$R_max,paste(Retain$R_min,Retain$R_max,sep="-"),NA))
   alln            <- data.table::data.table(n=1:N)
   Decision_R      <- merge(alln,Retain[,c("n","Retain")],by="n",all.x=TRUE); names(Decision_R)[names(Decision_R)=="Retain"]<-"R"
-  Decision_E      <- merge(Decision_R,Escalate,by="n",all.x=TRUE); names(Decision_E)[names(Decision_E)=="E_max"]<-"E"
+  Decision_E      <- merge(Escalate,Decision_R,by="n",all.x=TRUE); names(Decision_E)[names(Decision_E)=="E_max"]<-"E"
   Decision_D      <- merge(Decision_E,DeEscalate,by="n",all.x=TRUE); names(Decision_D)[names(Decision_D)=="D_min"]<-"D"
   Decision_D$Elim <- get_Elim_rules(Nmax=N,phi=phi,maxprob=maxtox)$c_STOP
   
