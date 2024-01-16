@@ -7,6 +7,8 @@
 #' @param save_as where to save output
 #' @param outcomes select outcomes from ph1_sim_OC_output (item 2)
 #' @param layout layout for panel of plots, default is c(5,3) for 15 outcomes (default for 'outcomes' parameter)
+#' @param linecol vector of line colors for plot. Needs to have same length as ph1_sim_OC_output
+#' @param title add title to plot
 #' @return plot
 #' @export
 #' @examples
@@ -38,21 +40,22 @@
 #'                                           c(0.025,0.05 ,0.10 ,0.20 ,0.30 ,0.40)), 
 #'                phi=0.3, design="3+3",acc_tit=1)
 #' ph1_sim_OC_plot(ph1_sim_OC_output=list(BOIN,three), 
-#' ylim_N=36,save_as="C:/Users/kdhollander/Desktop/test", outcomes=c(3:17))
+#' ylim_N=36,save_as="C:/Users/kdhollander/Desktop/test", outcomes=c(3:17), 
+#' linecol=c("blue","red"),title="Test")
 #' }
 
-ph1_sim_OC_plot<- function(ph1_sim_OC_output, ylim_N, save_as, outcomes=c(3:17), layout=c(5,3)){
+ph1_sim_OC_plot<- function(ph1_sim_OC_output, ylim_N, save_as, outcomes=c(3:17), layout=c(5,3),linecol, title){
   
   png(filename=paste0(save_as,"_",Sys.Date(),".png"),width=1000,height=1000)
   
     par(oma = c(1,1,1,1))
     par(mfrow=layout, mar=c(1.5,1.5,4,1),lwd=2, cex.axis=1.5, cex.main=2)
+    mtext(title, outer=TRUE, cex = 1.5)
     
     ds         <- ph1_sim_OC_output
     N_design   <- length(ds)
     N_scen     <- length(ds[[1]])
     N_outcomes <- length(outcomes)
-    col        <- c("blue","red","darkgreen")
     
     for (i in 1:N_outcomes){
       var<-outcomes[i]
@@ -67,16 +70,16 @@ ph1_sim_OC_plot<- function(ph1_sim_OC_output, ylim_N, save_as, outcomes=c(3:17),
         if (j==1){
           
           if (varname  %in% c("avg_SS","max_SS","avg_npt_MTD_sel","avg_nDLT")){
-            plot (1:N_scen,y_results,type="b",col=col[j], xaxt="n",xlab="",ylab="",main=paste0(i,")",y_labs),ylim=c(0,ylim_N))
+            plot (1:N_scen,y_results,type="b",col=linecol[j], xaxt="n",xlab="",ylab="",main=paste0(i,")",y_labs),ylim=c(0,ylim_N))
           } else {
-            plot (1:N_scen,y_results,type="b",col=col[j], xaxt="n",xlab="",ylab="",main=paste0(i,")",y_labs),ylim=c(0,1))
+            plot (1:N_scen,y_results,type="b",col=linecol[j], xaxt="n",xlab="",ylab="",main=paste0(i,")",y_labs),ylim=c(0,1))
           }
           
           axis(1,at = seq(1,N_scen, by = 1), las=1)
         }
         
         if (j>1){
-          lines(1:N_scen,y_results,type="b",col=col[j])
+          lines(1:N_scen,y_results,type="b",col=linecol[j])
         }
         
         grid()

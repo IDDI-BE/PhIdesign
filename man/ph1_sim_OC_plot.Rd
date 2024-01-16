@@ -9,7 +9,9 @@ ph1_sim_OC_plot(
   ylim_N,
   save_as,
   outcomes = c(3:17),
-  layout = c(5, 3)
+  layout = c(5, 3),
+  linecol,
+  title
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ ph1_sim_OC_plot(
 \item{outcomes}{select outcomes from ph1_sim_OC_output (item 2)}
 
 \item{layout}{layout for panel of plots, default is c(5,3) for 15 outcomes (default for 'outcomes' parameter)}
+
+\item{linecol}{vector of line colors for plot. Needs to have same length as ph1_sim_OC_output}
+
+\item{title}{add title to plot}
 }
 \value{
 plot
@@ -59,6 +65,7 @@ three<-ph1_sim_OC(nsim=10, scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90),
                                           c(0.025,0.05 ,0.10 ,0.20 ,0.30 ,0.40)), 
                phi=0.3, design="3+3",acc_tit=1)
 ph1_sim_OC_plot(ph1_sim_OC_output=list(BOIN,three), 
-ylim_N=36,save_as="C:/Users/kdhollander/Desktop/test", outcomes=c(3:17))
+ylim_N=36,save_as="C:/Users/kdhollander/Desktop/test", outcomes=c(3:17), 
+linecol=c("blue","red"),title="Test")
 }
 }
