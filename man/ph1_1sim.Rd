@@ -22,7 +22,8 @@ ph1_1sim(
   seed = NULL,
   halfkey = NULL,
   sim = "NO",
-  env = parent.frame()
+  env = parent.frame(),
+  hist = 0
 )
 }
 \arguments{
@@ -63,6 +64,8 @@ such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 \item{sim}{if "NO", calculate decision rules, define "YES" if done within simulation program for multiple studies}
 
 \item{env}{parent environment to pass objects from \code{\link{ph1_sim_OC}}}
+
+\item{hist}{complete history of simulation in results}
 }
 \value{
 a data.frame with elements

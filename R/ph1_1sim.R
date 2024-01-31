@@ -22,6 +22,7 @@
 #' @param seed define seed
 #' @param sim if "NO", calculate decision rules, define "YES" if done within simulation program for multiple studies
 #' @param env parent environment to pass objects from \code{\link{ph1_sim_OC}}
+#' @param hist complete history of simulation in results
 #' @return a data.frame with elements
 #' \itemize{
 #' \item dose_level: dose level
@@ -45,9 +46,11 @@
 #' ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 
 # truerate=c(0.1  ,0.15 ,0.2 );phi=0.25; phi1=0.6*0.25 ; phi2=1.4*0.25 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxNretain=15; 
-# acc_tit=0; dose_no_titr=NULL; design="BOIN"; MTD_safer=TRUE 
+# acc_tit=0; dose_no_titr=NULL; design="BOIN"; MTD_safer=TRUE; seed=NULL; hist=1;sim="NO"; BOIN_add33_rule=F
 ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
-                      dose_no_titr=NULL, BOIN_add33_rule=F, design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame()){ # MTD_safer: MTD should be <lambda_d
+                      dose_no_titr=NULL, BOIN_add33_rule=F, design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame(),hist=0){ # MTD_safer: MTD should be <lambda_d
+  
+  if (hist==1){result_list<-list()}
   
   if (!is.null(seed)) {
     set.seed(seed)
@@ -97,6 +100,8 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
   
   if (sim=="YES"){
     
+    hist<-0
+    
     if (! design=="3+3"){
       DLT_STOP<-env$DLT_STOP
     }
@@ -132,6 +137,8 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         if (dose_inv!= ndose & dose_inv!=dose_no_titr){dose_inv <- dose_inv + 1} else # Stay in accelerated titration phase
         if (dose_inv== ndose | dose_inv==dose_no_titr){break}                         # Go to cohort-wise dose-escalation algorithm
       }
+      
+      if (hist==1){result_list<-append(result_list,list(cbind(dose,npt,ndlt)))}
       if (dlt==1){break}  # Go to cohort-wise dose-escalation algorithm
     }
   }
@@ -157,6 +164,8 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         npt[dose_inv]  <- npt[dose_inv]  + 3
         ndlt[dose_inv] <- ndlt[dose_inv] + rbinom(n=1,size=3,truerate[dose_inv])
       }
+      
+      if (hist==1){result_list<-append(result_list,list(cbind(dose,npt,ndlt)))}
       
       p_hat<- ndlt/npt
       
@@ -239,6 +248,8 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         n              <- n+(cohortsize)
       }
       
+      if (hist==1){result_list<-append(result_list,list(cbind(dose,npt,ndlt)))}
+      
       p_hat<- ndlt/npt
       
       #----------------------------------------------------------------------------#
@@ -300,8 +311,10 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
       }
       
     } else {
+      p_iso[npt>0]  <- as.numeric(as.character(BOIN::select.mtd(target=phi, npts=npt[npt>0], ntox=ndlt[npt>0])$p_est$phat)) # Get isotonic estimates
       mtd<-BOIN::select.mtd(target=phi, npts=npt[npt>0], ntox=ndlt[npt>0], cutoff.eli=maxtox)$MTD  # Note if no MTD, function puts it at '99'
-      if (!(mtd==99)){MTD[mtd]<-1} else
+
+      if (!(mtd==99)){MTD[which(npt>0)[mtd]]<-1} else
         if ( (mtd==99)){mtd=NA}
     }
     
@@ -332,6 +345,8 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         ndlt[dose_inv] <- ndlt[dose_inv] + rbinom(n=1,size=(cohortsize  ),truerate[dose_inv])
         n              <- n+(cohortsize)
       }
+      
+      if (hist==1){result_list<-append(result_list,list(cbind(dose,npt,ndlt)))}
       
       p_hat<- ndlt/npt # not needed for algorithm
       
@@ -388,9 +403,13 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
       }
       
     } else {
+      
+      p_iso[npt>0]  <- as.numeric(as.character(BOIN::select.mtd(target=phi, npts=npt[npt>0], ntox=ndlt[npt>0])$p_est$phat)) # Get isotonic estimates
       mtd<-BOIN::select.mtd(target=phi, npts=npt[npt>0], ntox=ndlt[npt>0], cutoff.eli=maxtox)$MTD  # Note if no MTD, function puts it at '99'
-      if (!(mtd==99)){MTD[mtd]<-1} else
+      
+      if (!(mtd==99)){MTD[which(npt>0)[mtd]]<-1} else
         if ( (mtd==99)){mtd=NA}
+
     }
     
     #cbind(dose,npt,ndlt,p_hat,p_iso,MTD)
@@ -400,6 +419,8 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
   # Return results #
   #----------------#
   
-  return(as.data.frame(cbind(dose,npt,ndlt,p_hat,p_iso,MTD)))
+  result<-as.data.frame(cbind(dose,npt,ndlt,p_hat,p_iso,MTD))
+  if (hist==1){return(list(result,result_list))} else {
+  return(result)}
   
 }
