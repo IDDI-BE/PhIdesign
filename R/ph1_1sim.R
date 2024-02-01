@@ -13,7 +13,9 @@
 #' @param N number of patients (not needed for design="3+3")
 #' @param truerate scenario of true DLT rates for each dose level. This also defines the number of dose levels
 #' @param cohortsize cohort size, default is 3
-#' @param maxNretain If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9
+#' @param maxN If N(patients) at next dose level >=maxN, then stop algorithm, default is 9
+#' @param maxNdec condition for maxN. Two options: "STAY"= stop at maxN if decision is stay;
+#'    "ANY"=stop at maxN at any decision
 #' @param acc_tit logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT
 #' @param dose_no_titr first dose at which no accelerated titration anymore
 #' @param BOIN_add33_rule logical indicator: modify the decision from de-escalation to stay when observing 1 DLT out of 3 patients
@@ -35,19 +37,19 @@
 #' @export
 #' @examples
 #' ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
-#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
+#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxN=9, acc_tit=0, 
 #' design="BOIN", MTD_safer=TRUE)
 #' ph1_1sim(phi=0.3, maxtox=0.95, N=30, 
-#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=1, 
+#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxN=9, acc_tit=1, 
 #' design="Keyboard", MTD_safer=TRUE, halfkey=0.05)
 #' ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
-#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
+#' truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxN=9, acc_tit=0, 
 #' design="i3+3", MTD_safer=TRUE)
 #' ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 
-# truerate=c(0.1  ,0.15 ,0.2 );phi=0.25; phi1=0.6*0.25 ; phi2=1.4*0.25 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxNretain=15; 
+# truerate=c(0.1  ,0.15 ,0.2 );phi=0.25; phi1=0.6*0.25 ; phi2=1.4*0.25 ; start_dose=2; maxtox=0.95 ; N=15; cohortsize=3; maxN=15; 
 # acc_tit=0; dose_no_titr=NULL; design="BOIN"; MTD_safer=TRUE; seed=NULL; hist=1;sim="NO"; BOIN_add33_rule=F
-ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxNretain=NULL, acc_tit, 
+ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NULL,truerate=NULL,cohortsize=NULL,maxN=9, maxNdec="STAY", acc_tit, 
                       dose_no_titr=NULL, BOIN_add33_rule=F, design, MTD_safer=TRUE, seed = NULL, halfkey=NULL, sim="NO", env=parent.frame(),hist=0){ # MTD_safer: MTD should be <lambda_d
   
   if (hist==1){result_list<-list()}
@@ -287,7 +289,13 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         if ( dose_inv %in% dose_in_the_running){dose_inv <- dose_inv} else {break}
       }
       
-      if (npt[dose_inv]>=maxNretain){break} # if number of patients on "dose under investigation">= max specified (regardless decision E/D/R): STOP
+      if (maxNdec=="STAY"){
+        if (npt[dose_inv]>=maxN & decision=="R"){break} # if number of patients on "dose under investigation">= max specified (regardless decision E/D/R): STOP
+      }
+      
+      if (maxNdec=="ANY"){
+        if (npt[dose_inv]>=maxN){break} # if number of patients on "dose under investigation">= max specified (regardless decision E/D/R): STOP
+      }      
       
     }
     
@@ -376,7 +384,13 @@ ph1_1sim <- function (phi, phi1=NULL, phi2=NULL, start_dose=1, maxtox=NULL, N=NU
         if ( dose_inv %in% dose_in_the_running){dose_inv <- dose_inv} else {break}
       }
       
-      if (npt[dose_inv]>=maxNretain){break} # if number of patients on "dose under investigation">= max specified (regardless decision E/D/R): STOP
+      if (maxNdec=="STAY"){
+        if (npt[dose_inv]>=maxN & decision=="R"){break} # if number of patients on "dose under investigation">= max specified (regardless decision E/D/R): STOP
+      }
+      
+      if (maxNdec=="ANY"){
+        if (npt[dose_inv]>=maxN){break} # if number of patients on "dose under investigation">= max specified (regardless decision E/D/R): STOP
+      }      
       
     }
     

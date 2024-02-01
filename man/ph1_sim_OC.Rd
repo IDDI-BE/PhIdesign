@@ -73,7 +73,7 @@ result<-ph1_sim_OC(nsim=5,  scenarios=list(c(0.40 ,0.50 ,0.60 ,0.70 ,0.80 ,0.90)
                                            c(0.05 ,0.10 ,0.20 ,0.30 ,0.50 ,0.65),
                                            c(0.025,0.05 ,0.10 ,0.20 ,0.30 ,0.40)), 
    phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=18, 
-   cohortsize=3, maxNretain=9, acc_tit=0, design="BOIN", MTD_safer=TRUE)
+   cohortsize=3, maxN=9, maxNdec="STAY",acc_tit=0, design="BOIN", MTD_safer=TRUE)
 }
 \references{
 Liu S, Yuan Y. Bayesian Optimal Interval Designs for Phase I Clinical Trials. 

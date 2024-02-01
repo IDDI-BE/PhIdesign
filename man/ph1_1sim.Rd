@@ -13,7 +13,8 @@ ph1_1sim(
   N = NULL,
   truerate = NULL,
   cohortsize = NULL,
-  maxNretain = NULL,
+  maxN = 9,
+  maxNdec = "STAY",
   acc_tit,
   dose_no_titr = NULL,
   BOIN_add33_rule = F,
@@ -45,7 +46,10 @@ such that dose de-escalation is required, see \code{\link{get_BOIN_rules}}}
 
 \item{cohortsize}{cohort size, default is 3}
 
-\item{maxNretain}{If N(patients) at next dose level >=maxNretain, then stop algorithm, default is 9}
+\item{maxN}{If N(patients) at next dose level >=maxN, then stop algorithm, default is 9}
+
+\item{maxNdec}{condition for maxN. Two options: "STAY"= stop at maxN if decision is stay;
+"ANY"=stop at maxN at any decision}
 
 \item{acc_tit}{logical indicator if algorithm should start with accelerated titration=algorithm starts at dose level with first DLT}
 
@@ -81,13 +85,13 @@ Simulation of one Phase I study with classical 3+3 design,
 }
 \examples{
 ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
-truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
+truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxN=9, acc_tit=0, 
 design="BOIN", MTD_safer=TRUE)
 ph1_1sim(phi=0.3, maxtox=0.95, N=30, 
-truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=1, 
+truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxN=9, acc_tit=1, 
 design="Keyboard", MTD_safer=TRUE, halfkey=0.05)
 ph1_1sim(phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=15, 
-truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxNretain=9, acc_tit=0, 
+truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75), cohortsize=3, maxN=9, acc_tit=0, 
 design="i3+3", MTD_safer=TRUE)
 ph1_1sim(truerate=c(0.20 ,0.25 ,0.30 ,0.40 ,0.60 ,0.75),acc_tit=1,design="3+3")
 }

@@ -55,7 +55,7 @@
 #'                                            c(0.05 ,0.10 ,0.20 ,0.30 ,0.50 ,0.65),
 #'                                            c(0.025,0.05 ,0.10 ,0.20 ,0.30 ,0.40)), 
 #'    phi=0.3, phi1=0.6*0.3, phi2=1.4*0.3, maxtox=0.95, N=18, 
-#'    cohortsize=3, maxNretain=9, acc_tit=0, design="BOIN", MTD_safer=TRUE)
+#'    cohortsize=3, maxN=9, maxNdec="STAY",acc_tit=0, design="BOIN", MTD_safer=TRUE)
 
 # nsim=100;scenarios=list(c(0, 0.05 ,0.15));env=parent.frame() # for debug
 ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),OD_cut=c(0.6,0.8),OD_delta=0,...){ 
@@ -77,7 +77,7 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),OD_cut=c(0.6,0.8),OD_delt
     
     # Get ... arguments to be used by 'ph1_1sim' funtion
     #-------------------------------------------------
-    # args<-list(phi=0.1,phi1=0.2*0.1,phi2=2.2*0.1, maxtox=0.95, N=15, cohortsize=3, maxNretain=9, acc_tit=0, design="3+3", MTD_safer=TRUE);s=1 # for debug
+    # args<-list(phi=0.1,phi1=0.2*0.1,phi2=2.2*0.1, maxtox=0.95, N=15, cohortsize=3, maxN=9, acc_tit=0, design="3+3", MTD_safer=TRUE);s=1 # for debug
     args<-list(...) # these are the arguments for the 'ph1_1sim' function (see function arguments above, and use with "args" here below)
     args$sim<-"YES" # Don't calculate thresholds in ph1_1sim function, rather only once in sim function
     
@@ -120,7 +120,7 @@ ph1_sim_OC<-function(nsim,scenarios,env=parent.frame(),OD_cut=c(0.6,0.8),OD_delt
       
       # run one simulation
 
-      result <- ph1_1sim(phi=args$phi,phi1=args$phi1,phi2=args$phi2,maxtox=args$maxtox, N=args$N,truerate=args$truerate,cohortsize=args$cohortsize,maxNretain=args$maxNretain,
+      result <- ph1_1sim(phi=args$phi,phi1=args$phi1,phi2=args$phi2,maxtox=args$maxtox, N=args$N,truerate=args$truerate,cohortsize=args$cohortsize,maxN=args$maxN,maxNdec=args$maxNdec,
                          acc_tit=args$acc_tit, dose_no_titr=args$dose_no_titr, BOIN_add33_rule=args$BOIN_add33_rule,design=args$design, MTD_safer=args$MTD_safer, halfkey=args$halfkey, sim=args$sim)
       result
       npt [i,]         <- result[,"npt"]
